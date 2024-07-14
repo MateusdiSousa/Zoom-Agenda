@@ -3,7 +3,6 @@ CREATE TABLE user(
 	name varchar(100) not null,
 	email varchar(150) not null unique,
 	password varchar(255) not null,
-	allow_level tinyint not null,
 	active boolean not null,
 	admin boolean not null
 );
