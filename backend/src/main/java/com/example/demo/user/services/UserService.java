@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.user.domain.User;
@@ -18,7 +17,7 @@ import jakarta.transaction.Transactional;
 public class UserService {
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	public ResponseEntity<User> createUser(UserDto dto) {
 		try {
 			User user = new User(dto);
@@ -46,27 +45,22 @@ public class UserService {
 
 	public ResponseEntity<List<User>> findAll() {
 		try {
-			Optional<List<User>> response = userRepository.findAllByActiveTrue();
-			if (response.isPresent()) {
-				List<User> users = response.get();
-				return ResponseEntity.ok(users);
-			} else {
-				return ResponseEntity.notFound().build();
-			}
+			List<User> users = userRepository.findAll();
+			return ResponseEntity.ok(users);
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.notFound().build();
 		}
 	}
 
 	@Transactional
 	public ResponseEntity<User> updateUser(UserDto dto) {
 		try {
-			Optional<User> response = userRepository.findByEmail(dto.email());
+			Optional<User> response = userRepository.findById(dto.id());
 			if (response.isPresent()) {
 				User user = response.get();
 				user.setName(dto.name());
-				user.setAllow_level(dto.allow_level());
 				user.setAdmin(dto.admin());
+				user.setActive(dto.active());
 				try {
 					user.setEmail(dto.email());
 				} catch (Exception e) {
@@ -88,8 +82,7 @@ public class UserService {
 			User user = response.get();
 			user.setActive(false);
 			return ResponseEntity.ok("Usuário deletado com sucesso");
-		} 
-		else {
+		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
