@@ -5,7 +5,6 @@ public record UserDto(
 	String name,
 	String email,
 	String password,
-	Integer allow_level,
 	Boolean active,
 	Boolean admin 
 ) {}

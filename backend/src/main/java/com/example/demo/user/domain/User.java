@@ -5,17 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.demo.user.domain.UserDto;
+
 
 @Entity
 @Table(name = "User")
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
 	
 	@Id
@@ -27,22 +21,21 @@ public class User {
 	private String email;
 	
 	private String password;
-	
-	private Integer allow_level;
-	
+		
 	private Boolean admin;
 	
 	private Boolean active;
-	
-	public User() {}
 	
 	public User(UserDto dto) {
 		this.name = dto.name();
 		this.email = dto.email();
 		this.password = dto.password();
-		this.allow_level = dto.allow_level();
 		this.admin = dto.admin();
 		this.active = dto.active();
+	}
+	
+	public User() {
+		
 	}
 
 	public String getId() {
@@ -71,14 +64,6 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public Integer getAllow_level() {
-		return allow_level;
-	}
-
-	public void setAllow_level(Integer allow_level) {
-		this.allow_level = allow_level;
 	}
 
 	public Boolean getAdmin() {
