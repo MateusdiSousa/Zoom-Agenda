@@ -13,15 +13,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import com.example.demo.meeting.domain.Meeting;
+import com.example.demo.meeting.domain.MeetingDto;
+import com.example.demo.meeting.domain.MeetingRepository;
 import com.example.demo.meeting.domain.ZoomMeetingDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 @Service
-public class MeetingServices {
+public class ZoomServices {
 	@Value("${zoom.client.id}")
 	private String client_id;
 
@@ -30,6 +35,10 @@ public class MeetingServices {
 
 	@Value("${redirect.uri}")
 	private String redirect_uri;
+	
+	@Autowired
+	private MeetingServices meetingService;
+
 
 	public String generateBasicAuthHeader() {
 		String credentials = getClientId() + ":" + getClientSecret();
@@ -40,11 +49,8 @@ public class MeetingServices {
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	public ResponseEntity<String> getToken(String code) {
-
 		String url = "https://zoom.us/oauth/token";
-
 		HttpClient client = HttpClient.newHttpClient();
-
 		String credential = generateBasicAuthHeader();
 
 		Map<Object, Object> body = new HashMap<Object, Object>();
@@ -74,6 +80,10 @@ public class MeetingServices {
 
 		try {
 			String requestBody = objectMapper.writeValueAsString(dto);
+			System.out.println(dto.start_time());
+			System.out.println(requestBody);
+			
+			
 			HttpRequest request = HttpRequest.newBuilder(URI.create(url))
 					.header("Authorization", token)
 					.header("User-Agent", "Zoom-api-Jwt-Request")
@@ -81,6 +91,21 @@ public class MeetingServices {
 					.POST(BodyPublishers.ofString(requestBody)).build();
 			try {
 				HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+				String responseBody = response.body();
+				JsonObject json = (JsonObject) JsonParser.parseString(responseBody);
+				
+				String topic = json.get("topic").getAsString();
+				String agenda = json.get("agenda").getAsString();
+				String requester = json.get("host_email").getAsString();
+				int duration = json.get("duration").getAsInt();
+				String join_url = json.get("join_url").getAsString();
+				String start_time = json.get("start_time").getAsString().substring(0,16);
+				int meeting_id = json.get("id").getAsInt();
+				
+				MeetingDto meeting = new MeetingDto(topic, agenda, start_time, duration, join_url, requester, null, meeting_id);
+				
+				meetingService.SaveMeeting(meeting);
+				
 				return response.body();
 
 			} catch (Exception e) {
@@ -91,6 +116,8 @@ public class MeetingServices {
 		}
 	}
 
+	
+	
 	private static HttpRequest.BodyPublisher buildFormDataFromMap(Map<Object, Object> data) {
 		String formData = data.entrySet().stream()
 				.map(entry -> URLEncoder.encode(entry.getKey().toString(), StandardCharsets.UTF_8) + "="

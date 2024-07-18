@@ -1,9 +1,6 @@
 package com.example.demo.meeting.domain;
 
-import java.sql.Date;
-
 import org.json.JSONObject;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,11 +14,11 @@ public class Meeting {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 
-	private String title;
+	private String topic;
 
-	private String meeting;
+	private String agenda;
 	
-	private Date start_time;
+	private String start_time;
 	
 	private Integer duration_minutes;
 	
@@ -31,40 +28,43 @@ public class Meeting {
 	
 	private Object participants;
 	
-	private String meeting_minutes;
+	private int meeting_id;
+	
 	
 	public Meeting(MeetingDto dto) {
-		this.title = dto.title();
-		this.meeting = dto.title();
-		this.start_time = dto.start_time();
-		this.duration_minutes = dto.duration_minutes();
-		this.join_url = dto.join_url();
-		this.requester = dto.requester();
-		this.participants = dto.participants();
-		this.meeting_minutes = dto.meeting_minutes();
+		this.agenda = dto.getAgenda();
+		this.topic = dto.getTopic();
+		this.start_time = dto.getStart_time();
+		this.duration_minutes = dto.getDuration_minutes();
+		this.join_url = dto.getJoin_url();
+		this.requester = dto.getRequester();
+		this.participants = dto.getParticipants();
+		this.meeting_id = dto.getMeeting_id();
+	}
+	
+	public Meeting() {}
+
+ 	public String getTopic() {
+		return this.topic;
 	}
 
- 	public String getTitle() {
-		return title;
+	public void setTopic(String topic) {
+		this.topic = topic;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public String getAgenda() {
+		return this.agenda;
 	}
 
-	public String getMeeting() {
-		return meeting;
+	public void setAgenda(String agenda) {
+		this.agenda = agenda;
 	}
 
-	public void setMeeting(String meeting) {
-		this.meeting = meeting;
-	}
-
-	public Date getStart_time() {
+	public String getStart_time() {
 		return start_time;
 	}
 
-	public void setStart_time(Date start_time) {
+	public void setStart_time(String start_time) {
 		this.start_time = start_time;
 	}
 
@@ -100,20 +100,20 @@ public class Meeting {
 		this.participants = participants;
 	}
 
-	public String getMeeting_minutes() {
-		return meeting_minutes;
-	}
-
-	public void setMeeting_minutes(String meeting_minutes) {
-		this.meeting_minutes = meeting_minutes;
-	}
-	
 	public String getId() {
 		return this.id;
 	}
 	
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public int getMeeting_id() {
+		return meeting_id;
+	}
+
+	public void setMeeting_id(int meeting_id) {
+		this.meeting_id = meeting_id;
 	}
 	
 }
