@@ -9,15 +9,14 @@ CREATE TABLE user(
 
 CREATE TABLE meeting(
 	id varchar(36) primary key unique not null,
-	title varchar(50) not null,
-	meeting varchar(50) not null,
+	topic varchar(50) not null,
+	agenda varchar(50) not null,
 	start_time datetime not null,
 	duration_minutes int not null,
 	join_url varchar(250),
 	requester varchar(36),
 	participants JSON,
-	meeting_minutes varchar(10) not null,
-	FOREIGN KEY(requester) REFERENCES user(id)
+	meeting_id int unique
 );
 
 CREATE TABLE attachment(
