@@ -5,6 +5,7 @@ import { EditUser } from "../pages/user/edit-user";
 import { Home } from "../pages/home";
 import { CreateMeeting } from "../pages/meeting/create-meeting";
 import ZoomRedirect from "../pages/meeting/zoom-redirect";
+import { MeetingList } from "../pages/meeting/meeting-list";
 
 export function PublicRoutes(){
     return (
@@ -15,8 +16,7 @@ export function PublicRoutes(){
             <Route path="/" element={<Home/>}></Route>
             <Route path="/create-meeting" element={<CreateMeeting/>}></Route>
             <Route path="/zoom" element={<ZoomRedirect/>}></Route>
-
-
+            <Route path="/schedule" element={<MeetingList/>}></Route>
         </Routes>
     )
 }

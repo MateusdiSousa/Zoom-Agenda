@@ -11,17 +11,14 @@ interface Props {
 export const CardHome = (props: Props) => {
     return (
         <>
-            <div className="flex flex-col space-y-5 p-8 bg-slate-200 rounded-3xl">
+            <div className="flex flex-col space-y-5 p-8 rounded-3xl">
                 <div className="flex justify-center">
                     {props.icon}
                 </div>
                 <span> {props.titleCard} </span>
                 <Link to={props.buttonLink}>
                     <button
-                        className="rounded-lg bg-fonteAmarela py-4 px-20 font-sans text-xs font-bold uppercase 
-                            text-black shadow-md shadow-gray-500 transition-all hover:shadow-lg 
-                            hover:shadow-gray-500 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
-                            active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        className="rounded-lg py-4 px-20 font-sans text-xs font-bold uppercase transition-all hover:shadow-lg focus:opacity-[0.85]  "
                     >
                         {" "} {props.buttonText} {" "}
                     </button>

@@ -6,12 +6,10 @@ interface InputDateProps {
 
 export function InputDate(props: InputDateProps) {
 
-    const handleDate = (dateString : string) => {
-        console.log(dateString)
-        let horas : number = parseInt(dateString.substring(11,13))
-        horas = horas - 3
-        dateString = dateString.substring(0,11) + horas + dateString.substring(13,16)
-        props.setValue(new Date(dateString))
+    const handleDate = async (dateString : string) => {
+        let date : Date = new Date(dateString);
+        date.setHours(date.getHours()-3);
+        props.setValue(date)
     }
 
     return (

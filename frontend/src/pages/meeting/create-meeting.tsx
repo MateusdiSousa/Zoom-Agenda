@@ -10,7 +10,7 @@ import axios from "axios"
 export function CreateMeeting() {
     const [topic, setTopic] = useState<string>("")
     const [agenda, setAgenda] = useState<string>("")
-    const [start_time, setStartTime] = useState<Date>(new Date())
+    const [start_time, setStartTime] = useState<Date>(new Date)
     const [duration, setDuration] = useState<number>(0)
     // const [modal, setModal] = useState<boolean>(false)
 
@@ -36,12 +36,13 @@ export function CreateMeeting() {
     }
 
     const AgendarReuniaoZoom = async () => {
+        console.log(start_time.toISOString())
         try {
             const meeting: ZoomMeeting = {
                 type : 2,
                 agenda: agenda,
                 duration: duration,
-                start_time: start_time,
+                start_time: start_time.toISOString(),
                 topic: topic,
                 timezone: "America/Sao Paulo",
                 settings: {

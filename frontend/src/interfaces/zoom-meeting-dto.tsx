@@ -1,7 +1,7 @@
 export interface ZoomMeeting {
     topic: string,
     agenda: string,
-    start_time: Date,
+    start_time: string,
     duration: number,
     timezone: string,
     settings: ZoomMeetingSettings
