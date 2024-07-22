@@ -1,0 +1,1 @@
+ALTER TABLE meeting MODIFY meeting_id VARCHAR(50);
