@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { TextField } from "../../components/text-field";
-import { Checkbox } from "../../components/checkbox";
+import { TextField } from "../../components/input/text-field";
+import { Checkbox } from "../../components/input/checkbox";
 import { UserDto } from "../../interfaces/user-dto";
 import { userServices } from "../../services/userServices";
 import { useLocation, useNavigate } from "react-router-dom";
-import InformationModal from "../../components/information-modal";
+import InformationModal from "../../components/modal/information-modal";
 
 export function EditUser() {
     const [name, setName] = useState<string>("");

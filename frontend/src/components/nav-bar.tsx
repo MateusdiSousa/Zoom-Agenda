@@ -22,8 +22,8 @@ export function Navbar() {
                         </div>
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                            <li><Link to={"/"}>Homepage</Link></li>
+                            className="menu menu-sm dropdown-content rounded-box z-[1] mt-3 w-52 p-2 ">
+                            <li><Link className="btn bg-white" to={"/"}>Homepage</Link></li>
                         </ul>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import { CardHome } from "../components/card-home";
+import { CardHome } from "../components/home/card-home";
 import { FaCalendar, FaUser } from "react-icons/fa";
 
 export function Home() {
