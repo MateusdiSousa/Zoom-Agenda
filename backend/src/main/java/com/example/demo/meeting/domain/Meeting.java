@@ -28,7 +28,7 @@ public class Meeting {
 	
 	private Object participants;
 	
-	private int meeting_id;
+	private String meeting_id;
 	
 	
 	public Meeting(MeetingDto dto) {
@@ -108,11 +108,11 @@ public class Meeting {
 		this.id = id;
 	}
 
-	public int getMeeting_id() {
+	public String getMeeting_id() {
 		return meeting_id;
 	}
 
-	public void setMeeting_id(int meeting_id) {
+	public void setMeeting_id(String meeting_id) {
 		this.meeting_id = meeting_id;
 	}
 	

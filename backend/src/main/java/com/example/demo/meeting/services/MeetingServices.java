@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +32,22 @@ public class MeetingServices {
 			return ResponseEntity.ok(meetings);
 		} catch (DataAccessException e) {
 			return ResponseEntity.internalServerError().build();
+		}
+	}
+	
+	public ResponseEntity<String> deleteMeeting(String id){
+		try {
+			Optional<Meeting> response = meetingRepository.getByMeetingId(id);
+			
+			if (response.isPresent()) {
+				meetingRepository.delete(response.get());
+				return ResponseEntity.ok("Deletado com sucesso");
+			}
+			else {
+				return ResponseEntity.notFound().build();
+			}
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
 		}
 	}
 }

@@ -10,9 +10,9 @@ public class MeetingDto{
 	private String join_url;
 	private String requester;
 	private JSONObject participants;
-	private int meeting_id;
+	private String meeting_id;
 	
-	public MeetingDto(String topic, String agenda, String start_time, int duration, String join_url, String requester, JSONObject participants, int meeting_id) {
+	public MeetingDto(String topic, String agenda, String start_time, int duration, String join_url, String requester, JSONObject participants, String meeting_id) {
 		this.topic = topic;
 		this.agenda = agenda;
 		this.start_time = start_time;
@@ -79,11 +79,11 @@ public class MeetingDto{
 		this.participants = participants;
 	}
 
-	public int getMeeting_id() {
+	public String getMeeting_id() {
 		return meeting_id;
 	}
 
-	public void setMeeting_id(int meeting_id) {
+	public void setMeeting_id(String meeting_id) {
 		this.meeting_id = meeting_id;
 	}
 	

@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.example.demo.meeting.domain.Meeting;
 import com.example.demo.meeting.domain.MeetingDto;
-import com.example.demo.meeting.domain.MeetingRepository;
 import com.example.demo.meeting.domain.ZoomMeetingDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
@@ -100,7 +98,7 @@ public class ZoomServices {
 				int duration = json.get("duration").getAsInt();
 				String join_url = json.get("join_url").getAsString();
 				String start_time = json.get("start_time").getAsString().substring(0,16);
-				int meeting_id = json.get("id").getAsInt();
+				String meeting_id = json.get("id").getAsString();
 				
 				MeetingDto meeting = new MeetingDto(topic, agenda, start_time, duration, join_url, requester, null, meeting_id);
 				
@@ -116,7 +114,31 @@ public class ZoomServices {
 		}
 	}
 
-	
+	public String DeleteMeeting(String id, String token) {
+		
+		String url = "https://api.zoom.us/v2/meetings/"+id;
+
+		HttpClient client = HttpClient.newHttpClient();
+		
+		try {
+			HttpRequest request = HttpRequest.newBuilder(URI.create(url))
+			.header("Authorization", token)
+			.header("User-Agent", "Zoom-api-Jwt-Request")
+			.header("Content-Type", "application/json")
+			.DELETE().build();
+			
+			try { 
+				HttpResponse<String> response = client.send(request,BodyHandlers.ofString());
+				meetingService.deleteMeeting(id);
+				return response.body();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "";
+	}
 	
 	private static HttpRequest.BodyPublisher buildFormDataFromMap(Map<Object, Object> data) {
 		String formData = data.entrySet().stream()
