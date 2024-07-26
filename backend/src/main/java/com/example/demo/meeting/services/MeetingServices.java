@@ -16,7 +16,7 @@ import com.example.demo.meeting.domain.MeetingRepository;
 public class MeetingServices {
 	@Autowired
 	private MeetingRepository meetingRepository;
-	
+
 	public void SaveMeeting(MeetingDto dto) {
 		try {
 			Meeting meeting = new Meeting(dto);
@@ -25,8 +25,19 @@ public class MeetingServices {
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	public ResponseEntity<List<Meeting>> getAllMeeting(){
+
+	public ResponseEntity<String> UpdateMeeting(MeetingDto dto) {
+		Optional<Meeting> response = meetingRepository.getByMeetingId(dto.getMeeting_id());
+		if (response.isPresent()) {
+			Meeting meeting = response.get();
+			meeting.updateMeeting(dto);
+			meetingRepository.save(meeting);
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.notFound().build();
+	}
+
+	public ResponseEntity<List<Meeting>> getAllMeeting() {
 		try {
 			List<Meeting> meetings = this.meetingRepository.findAll();
 			return ResponseEntity.ok(meetings);
@@ -34,16 +45,15 @@ public class MeetingServices {
 			return ResponseEntity.internalServerError().build();
 		}
 	}
-	
-	public ResponseEntity<String> deleteMeeting(String id){
+
+	public ResponseEntity<String> deleteMeeting(String id) {
 		try {
 			Optional<Meeting> response = meetingRepository.getByMeetingId(id);
-			
+
 			if (response.isPresent()) {
 				meetingRepository.delete(response.get());
 				return ResponseEntity.ok("Deletado com sucesso");
-			}
-			else {
+			} else {
 				return ResponseEntity.notFound().build();
 			}
 		} catch (Exception e) {

@@ -115,5 +115,14 @@ public class Meeting {
 	public void setMeeting_id(String meeting_id) {
 		this.meeting_id = meeting_id;
 	}
-	
+
+	public void updateMeeting(MeetingDto dto){
+		this.agenda = dto.getAgenda();
+		this.topic = dto.getTopic();
+		this.start_time = dto.getStart_time();
+		this.duration_minutes = dto.getDuration_minutes();
+		this.join_url = dto.getJoin_url();
+		this.requester = dto.getRequester();
+		this.participants = dto.getParticipants();
+	}
 }

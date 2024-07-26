@@ -16,6 +16,8 @@ import com.example.demo.meeting.domain.Meeting;
 import com.example.demo.meeting.domain.ZoomMeetingDto;
 import com.example.demo.meeting.services.MeetingServices;
 import com.example.demo.meeting.services.ZoomServices;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/meeting")
@@ -45,5 +47,10 @@ public class MeetingController {
 	@DeleteMapping("/{id}")
 	public String deleteMeeting(@PathVariable String id, @RequestHeader("authorization") String token){
 		return zoomService.DeleteMeeting(id, token);
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<String> updateMeeting(@PathVariable String id, @RequestBody ZoomMeetingDto meeting, @RequestHeader("authorization") String token) {
+		return zoomService.UpdateMeetingZoom(meeting, token, id);
 	}
 }

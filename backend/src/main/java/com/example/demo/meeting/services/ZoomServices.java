@@ -25,13 +25,13 @@ import com.google.gson.JsonParser;
 
 @Service
 public class ZoomServices {
-	@Value("${zoom.client.id}")
+	@Value("${ZOOM_CLIENT_ID}")
 	private String client_id;
-
-	@Value("${zoom.client.secret}")
+	
+	@Value("${ZOOM_CLIENT_SECRET}")
 	private String client_secret;
 
-	@Value("${redirect.uri}")
+	@Value("${REDIRECT_URI}")
 	private String redirect_uri;
 	
 	@Autowired
@@ -77,10 +77,7 @@ public class ZoomServices {
 		HttpClient client = HttpClient.newHttpClient();
 
 		try {
-			String requestBody = objectMapper.writeValueAsString(dto);
-			System.out.println(dto.start_time());
-			System.out.println(requestBody);
-			
+			String requestBody = objectMapper.writeValueAsString(dto);			
 			
 			HttpRequest request = HttpRequest.newBuilder(URI.create(url))
 					.header("Authorization", token)
@@ -92,15 +89,7 @@ public class ZoomServices {
 				String responseBody = response.body();
 				JsonObject json = (JsonObject) JsonParser.parseString(responseBody);
 				
-				String topic = json.get("topic").getAsString();
-				String agenda = json.get("agenda").getAsString();
-				String requester = json.get("host_email").getAsString();
-				int duration = json.get("duration").getAsInt();
-				String join_url = json.get("join_url").getAsString();
-				String start_time = json.get("start_time").getAsString().substring(0,16);
-				String meeting_id = json.get("id").getAsString();
-				
-				MeetingDto meeting = new MeetingDto(topic, agenda, start_time, duration, join_url, requester, null, meeting_id);
+				MeetingDto meeting = this.convertJsonToMeetingDto(json);
 				
 				meetingService.SaveMeeting(meeting);
 				
@@ -140,6 +129,32 @@ public class ZoomServices {
 		return "";
 	}
 	
+	public ResponseEntity<String> UpdateMeetingZoom(ZoomMeetingDto meeting, String token, String id){
+		String url = "mhttps://api.zoom.us/v2/eetings/"+id;
+		try {
+			String requestBody = objectMapper.writeValueAsString(meeting);
+			HttpClient client = HttpClient.newHttpClient();
+			HttpRequest request = HttpRequest.newBuilder(URI.create(url))
+			.header("Authorization", token)
+			.header("User-Agent", "Zoom-api-Jwt-Request")
+			.header("Content-Type", "application/json")
+			.method("PATCH", BodyPublishers.ofString(requestBody))
+			.build();
+			
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+
+			String responseBody = response.body();
+
+			JsonObject json = (JsonObject) JsonParser.parseString(responseBody);
+
+			MeetingDto meetingDto = this.convertJsonToMeetingDto(json);
+
+			return meetingService.UpdateMeeting(meetingDto);
+		} catch (Exception e) {
+			return ResponseEntity.ofNullable(e.getMessage());
+		}
+	}
+
 	private static HttpRequest.BodyPublisher buildFormDataFromMap(Map<Object, Object> data) {
 		String formData = data.entrySet().stream()
 				.map(entry -> URLEncoder.encode(entry.getKey().toString(), StandardCharsets.UTF_8) + "="
@@ -147,6 +162,18 @@ public class ZoomServices {
 				.collect(Collectors.joining("&"));
 
 		return BodyPublishers.ofString(formData);
+	}
+
+	public MeetingDto convertJsonToMeetingDto(JsonObject json){
+		String topic = json.get("topic").getAsString();
+		String agenda = json.get("agenda").getAsString();
+		String requester = json.get("host_email").getAsString();
+		int duration = json.get("duration").getAsInt();
+		String join_url = json.get("join_url").getAsString();
+		String start_time = json.get("start_time").getAsString().substring(0,16);
+		String meeting_id = json.get("id").getAsString();
+		
+		return new MeetingDto(topic, agenda, start_time, duration, join_url, requester, null, meeting_id);
 	}
 
 	public String getClientId() {

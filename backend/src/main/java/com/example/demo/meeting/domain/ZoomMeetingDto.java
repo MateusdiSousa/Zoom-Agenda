@@ -1,5 +1,4 @@
 package com.example.demo.meeting.domain;
-import java.time.ZonedDateTime;
 
 public record ZoomMeetingDto(
 		String topic,
