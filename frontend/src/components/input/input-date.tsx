@@ -17,7 +17,7 @@ export function InputDate(props: InputDateProps) {
             <label>{props.name}:</label>
             <input 
             className="bordaInput items-center w-72 h-auto p-1 rounded-md border-2" 
-            value={props.value.toISOString().substring(0, 16)}
+            value={props.value.toISOString().substring(0,16)}
             type="datetime-local" onChange={(e) => handleDate(e.target.value)} />
         </div>
     )

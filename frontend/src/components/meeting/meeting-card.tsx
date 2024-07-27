@@ -2,24 +2,24 @@ import { useState } from "react";
 import { meeting } from "../../interfaces/meeting";
 import { meetingService } from "../../services/meetingServices";
 import ConfirmationModal from "../modal/confirmation-modal";
+import { MeetingEditModal } from "./meeting-edit-modal";
+import { convertDateToBrasil } from "../../services/convertDate";
 
-export function MeetingCard(props : {meeting : meeting, deleteComponent : Function }) {
+export function MeetingCard(props : {meeting : meeting, deleteComponent : Function , getMeeting : Function}) {
     const [modalDelete, setModalDelete] = useState<boolean>(false);
-
+    
     const DeleteMeeting = () => {
         meetingService.deleteMeeting(props.meeting.meeting_id).then(() => {
             props.deleteComponent(props.meeting.id)
+            setModalDelete(false);
+            props.getMeeting();
         })
     }
 
     let start_time = new Date(props.meeting.start_time);
 
-    const convertDateToBrasil = (date: Date) => {
-        const novaData = new Date(date.getTime() - 180 * 60 * 1000);
-        return novaData;
-    }
-
     start_time = convertDateToBrasil(start_time);
+    
     return (
         <>
             <div className="bg-base-300 m-2 rounded-md flex items-center justify-between">
@@ -33,9 +33,10 @@ export function MeetingCard(props : {meeting : meeting, deleteComponent : Functi
                         <li className="p-2 flex">Duration: {props.meeting.duration_minutes}</li>
                     </ul>
                 </div>
-                <div>
-                    <a href={props.meeting.join_url} target="_blank" className="btn p-2 mr-5">Join</a>
-                    <button onClick={() => setModalDelete(true)}>Delete</button>
+                <div className="space-x-5 mr-4">
+                    <a href={props.meeting.join_url} target="_blank" className="btn">Join</a>
+                    <MeetingEditModal getMeeting={props.getMeeting} meeting={props.meeting}/>
+                    <button className="btn bg-warning btn-warning" onClick={() => setModalDelete(true)}>Delete</button>
                 </div>
             </div>
 

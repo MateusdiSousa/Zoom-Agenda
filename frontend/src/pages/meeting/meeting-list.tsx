@@ -7,13 +7,17 @@ import { meetingService } from "../../services/meetingServices";
 export function MeetingList() {
     const [meetings, setMeetings] = useState<meeting[]>([]);
 
-    useEffect(() => {
+    const getMeetings = () => {
         meetingService.getMeeting().then(resp => {
             if (resp.status === 200) {
                 console.log(resp.data)
                 setMeetings(resp.data)
             }
         })
+    }
+
+    useEffect(() => {
+        getMeetings();
     }, [])
 
     const removeMeeting = (id: string) => {
@@ -30,6 +34,7 @@ export function MeetingList() {
                 {meetings.map(meeting => {
                     return (
                         <MeetingCard
+                            getMeeting={getMeetings}
                             meeting={meeting}
                             deleteComponent={removeMeeting}
                         />
@@ -37,7 +42,7 @@ export function MeetingList() {
                 })}
             </>
             <div>
-                <Link to={"/create-meeting"}><button>Create Meeting</button></Link>
+                <Link className="btn" to={"/create-meeting"}>Create Meeting</Link>
             </div>
         </>
     )

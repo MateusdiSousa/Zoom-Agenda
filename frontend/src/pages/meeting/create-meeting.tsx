@@ -37,7 +37,6 @@ export function CreateMeeting() {
     }
 
     const AgendarReuniaoZoom = async () => {
-        console.log(start_time.toISOString())
         try {
             const meeting: ZoomMeeting = {
                 type : 2,
@@ -58,7 +57,6 @@ export function CreateMeeting() {
                     auto_recording: 'none',
                 }
             }
-            console.log("token: "+ localStorage.getItem('token'));
             await axios.post("http://localhost:8080/meeting/schedule", meeting,
                 {
                     headers: {
