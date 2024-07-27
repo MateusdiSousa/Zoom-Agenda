@@ -8,13 +8,17 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.demo.meeting.domain.MeetingDto;
@@ -130,26 +134,39 @@ public class ZoomServices {
 	}
 	
 	public ResponseEntity<String> UpdateMeetingZoom(ZoomMeetingDto meeting, String token, String id){
-		String url = "mhttps://api.zoom.us/v2/eetings/"+id;
+		String url = "https://api.zoom.us/v2/meetings/"+id;
+		HttpClient client = HttpClient.newHttpClient();
 		try {
 			String requestBody = objectMapper.writeValueAsString(meeting);
-			HttpClient client = HttpClient.newHttpClient();
-			HttpRequest request = HttpRequest.newBuilder(URI.create(url))
-			.header("Authorization", token)
+			URI uri = URI.create(url);
+			System.out.println(uri);
+
+			HttpRequest request = HttpRequest.newBuilder(uri)
+			.header("Authorization", "Bearer "+token)
 			.header("User-Agent", "Zoom-api-Jwt-Request")
 			.header("Content-Type", "application/json")
-			.method("PATCH", BodyPublishers.ofString(requestBody))
-			.build();
-			
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			.method("PATCH", BodyPublishers.ofString(requestBody)).build();
 
-			String responseBody = response.body();
+			System.out.println(request);
+			try {
+				HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+				if (response.statusCode() == 204) {
+					String time = this.convertDateTimeBrasilToUTC(meeting.start_time().substring(0,16));
+					System.out.println(time);
+					MeetingDto dto = new MeetingDto(meeting.topic(), meeting.agenda(), time, meeting.duration(), "", "",null, id);
+					return meetingService.UpdateMeeting(dto);
+				}		
+				
+				if (response.statusCode() == 401) {
+					return ResponseEntity.of(ProblemDetail.forStatus(401)).build();
+				}
 
-			JsonObject json = (JsonObject) JsonParser.parseString(responseBody);
+				return ResponseEntity.notFound().build();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().build();
+			}
 
-			MeetingDto meetingDto = this.convertJsonToMeetingDto(json);
-
-			return meetingService.UpdateMeeting(meetingDto);
 		} catch (Exception e) {
 			return ResponseEntity.ofNullable(e.getMessage());
 		}
@@ -174,6 +191,13 @@ public class ZoomServices {
 		String meeting_id = json.get("id").getAsString();
 		
 		return new MeetingDto(topic, agenda, start_time, duration, join_url, requester, null, meeting_id);
+	}
+
+	public String convertDateTimeBrasilToUTC(String brazilTimeIso){
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+		LocalDateTime dateTime = LocalDateTime.parse(brazilTimeIso, formatter);
+		LocalDateTime newDateTime = dateTime.plusHours(3);
+		return newDateTime.format(formatter);
 	}
 
 	public String getClientId() {

@@ -50,7 +50,7 @@ public class MeetingController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<String> updateMeeting(@PathVariable String id, @RequestBody ZoomMeetingDto meeting, @RequestHeader("authorization") String token) {
+	public ResponseEntity<String> updateMeeting(@PathVariable String id, @RequestBody ZoomMeetingDto meeting, @RequestHeader("Authorization") String token) {
 		return zoomService.UpdateMeetingZoom(meeting, token, id);
 	}
 }

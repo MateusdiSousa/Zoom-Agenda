@@ -32,7 +32,7 @@ public class MeetingServices {
 			Meeting meeting = response.get();
 			meeting.updateMeeting(dto);
 			meetingRepository.save(meeting);
-			return ResponseEntity.ok().build();
+			return ResponseEntity.status(204).build();
 		}
 		return ResponseEntity.notFound().build();
 	}
