@@ -60,4 +60,14 @@ public class MeetingServices {
 			return ResponseEntity.notFound().build();
 		}
 	}
+
+	public Meeting getOneMeeting(String id){
+		try {
+			Optional<Meeting> response = meetingRepository.findById(id);
+			Meeting meeting = response.get();
+			return meeting;	
+		} catch (Exception e) {
+			throw new Error(e.getMessage());
+		}
+	}
 }
