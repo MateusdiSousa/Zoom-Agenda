@@ -1,45 +1,49 @@
 package com.example.demo.attachment.services;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileService {
-    private static final String BASE_DIRECTORY = "./anexos/";
+    private static final String BASE_DIRECTORY = "anexos/";
 
-    public String storeFile(MultipartFile file, String meetingId){
-        String path = BASE_DIRECTORY+meetingId;
+    public String storeFile(MultipartFile file, String meetingId) {
+        String path = BASE_DIRECTORY + meetingId;
+        File dir = new File(path);
 
-        File directory = new File(path);
-
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (dir.exists()) {
+            System.out.println("Diretório existe");
+        } 
+        else {
+            dir.mkdirs();
+            System.out.println("Diretório criado: "+ dir.getPath());
         }
 
         String fileName = generateFileName(file.getOriginalFilename());
 
-        File destinationFile = new File(path, fileName);
+        Path destinationPath = Paths.get(path, fileName);
 
         try {
-            file.transferTo(destinationFile);
-            return fileName;
-        } catch (Exception e) {
-            throw new Error(e.getMessage());
+            Files.copy(file.getInputStream(), destinationPath);
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar o arquivo: " + e.getMessage());
+            return "Erro ao salvar o arquivo";
         }
+
+        return fileName;
     }
 
     private String generateFileName(String originalFilename) {
-        String name = originalFilename.replaceAll("\\s+", "");
-        String extension = "";
-
-        int lastDot = originalFilename.lastIndexOf('.');
-        if (lastDot > 0 && lastDot < originalFilename.length() - 1) {
-            extension = originalFilename.substring(lastDot);
-        }
-
+        int dotIndex = originalFilename.indexOf(".");
+        String name = originalFilename.substring(0, dotIndex);
+        String extension = originalFilename.substring(dotIndex);
         return name + "-" + UUID.randomUUID().toString() + extension;
     }
 }

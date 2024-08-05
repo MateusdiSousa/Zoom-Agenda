@@ -1,10 +1,8 @@
-package com.example.demo.attachment.domain;
-
-import java.util.List;
+package com.example.demo.attachment.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
 public record AttachmentDto(
     String meetingId,
-    List<MultipartFile> files
+    MultipartFile file
 ) {}
