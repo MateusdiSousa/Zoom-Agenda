@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { MouseEvent, SetStateAction, useState } from "react"
 import { TextField } from "../../components/input/text-field"
 import { InputDate } from "../../components/input/input-date"
 import { InputNumber } from "../../components/input/input-number"
@@ -13,6 +13,11 @@ export function CreateMeeting() {
     const [start_time, setStartTime] = useState<Date>(new Date)
     const [duration, setDuration] = useState<number>(0)
     const [ConfirmationModal, setConfirmationModal] = useState<boolean>(false)
+    const [selectedFile, setSelectedFile] = useState<File>();
+
+    const handleFile = (event : any) => {
+            setSelectedFile(event.target.files[0]);
+    }
 
     const clientID = 'zt6lhdUVTteosZ9p7x_NA'
     const redirectUri = encodeURIComponent('http://localhost:5173/zoom')
@@ -20,7 +25,7 @@ export function CreateMeeting() {
 
     const nav = useNavigate();
 
-    const autenticarUsuario = (event : React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const autenticarUsuario = (event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
         event.preventDefault();
         let authWindow = window.open(zoomAuthUrl, '_blank', 'width=500,height=600');
 
@@ -61,11 +66,22 @@ export function CreateMeeting() {
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
+                    },
+                    
                 }
-            ).then(resp => {
-                if (resp.status == 200) {
-                    setConfirmationModal(true)
+            ).then(async resp => {
+                if (resp.status == 200 && selectedFile != null) {
+                    const formData : FormData = new FormData();
+                    const meetingId = resp.data.id;
+
+                    formData.append("meetingId",meetingId)
+                    formData.append("file", selectedFile);
+                    await axios.post("http://localhost:8080/attachment", formData).then(resp => {
+                        console.log(resp)
+                        if (resp.status == 200) {
+                            setConfirmationModal(true);
+                        }
+                    })
                 }
             }).catch(error => {
                 console.log(error)
@@ -83,6 +99,7 @@ export function CreateMeeting() {
                 <TextField name={"agenda: "} value={agenda} setvalue={setAgenda} type="text" />
                 <InputDate name="Date" setValue={setStartTime} value={start_time} />
                 <InputNumber name="Duration" setValue={setDuration} value={duration} />
+                <input type="file" onChange={handleFile}/>
                 <button onClick={(e) => autenticarUsuario(e)}>Agendar</button>
             </form>
 

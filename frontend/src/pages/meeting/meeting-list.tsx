@@ -34,6 +34,7 @@ export function MeetingList() {
                 {meetings.map(meeting => {
                     return (
                         <MeetingCard
+                            key={meeting.start_time}
                             getMeeting={getMeetings}
                             meeting={meeting}
                             deleteComponent={removeMeeting}
