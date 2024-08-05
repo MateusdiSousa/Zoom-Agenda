@@ -1,5 +1,7 @@
 package com.example.demo.user.domain;
 
+import com.example.demo.user.dto.UserDto;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

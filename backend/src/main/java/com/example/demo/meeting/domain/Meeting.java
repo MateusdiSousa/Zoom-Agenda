@@ -1,6 +1,9 @@
 package com.example.demo.meeting.domain;
 
 import org.json.JSONObject;
+
+import com.example.demo.meeting.dto.MeetingDto;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.meeting.domain.Meeting;
-import com.example.demo.meeting.domain.ZoomMeetingDto;
+import com.example.demo.meeting.dto.ZoomMeetingDto;
 import com.example.demo.meeting.services.MeetingServices;
 import com.example.demo.meeting.services.ZoomServices;
 import org.springframework.web.bind.annotation.PutMapping;

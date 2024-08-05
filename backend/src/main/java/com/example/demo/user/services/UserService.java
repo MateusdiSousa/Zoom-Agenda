@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.user.domain.User;
-import com.example.demo.user.domain.UserDto;
 import com.example.demo.user.domain.UserRepository;
+import com.example.demo.user.dto.UserDto;
 
 import jakarta.transaction.Transactional;
 

@@ -1,4 +1,4 @@
-package com.example.demo.meeting.domain;
+package com.example.demo.meeting.dto;
 
 public record ZoomMeetingDto(
 		String topic,

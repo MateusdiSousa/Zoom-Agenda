@@ -20,8 +20,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.example.demo.meeting.domain.MeetingDto;
-import com.example.demo.meeting.domain.ZoomMeetingDto;
+
+import com.example.demo.meeting.dto.MeetingDto;
+import com.example.demo.meeting.dto.ZoomMeetingDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

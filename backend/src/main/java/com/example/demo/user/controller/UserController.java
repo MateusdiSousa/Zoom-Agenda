@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.user.domain.User;
-import com.example.demo.user.domain.UserDto;
+import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.services.UserService;
 
 

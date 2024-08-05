@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.meeting.domain.Meeting;
-import com.example.demo.meeting.domain.MeetingDto;
 import com.example.demo.meeting.domain.MeetingRepository;
+import com.example.demo.meeting.dto.MeetingDto;
 
 @Service
 public class MeetingServices {

@@ -1,4 +1,4 @@
-package com.example.demo.user.domain;
+package com.example.demo.user.dto;
 
 public record UserDto(
 	String id,
