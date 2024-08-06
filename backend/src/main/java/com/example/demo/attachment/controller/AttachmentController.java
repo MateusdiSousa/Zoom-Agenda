@@ -13,8 +13,9 @@ import com.example.demo.meeting.services.MeetingServices;
 import java.io.File;
 import java.util.List;
 
-import org.apache.tomcat.util.file.ConfigurationSource.Resource;
+import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,9 +47,18 @@ public class AttachmentController {
         return ResponseEntity.ok("Arquivos salvos"); 
     }
 
-    @GetMapping("{meetingId}/{fileName}")
+    @GetMapping("/{meetingId}/{fileName}")
     public ResponseEntity<Resource> getFile(@PathVariable String meetingId, @PathVariable String fileName) {
-        return new String();
+        Resource file = attachmentService.loadAsResource(meetingId, fileName);
+        if (file == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        System.out.println(file.getFilename());
+
+        return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ file.getFilename()+"\"")
+        .body(file);
     }
 
 }

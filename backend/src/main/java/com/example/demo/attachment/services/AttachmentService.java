@@ -54,25 +54,23 @@ public class AttachmentService {
         }
     }
 
-    public Path load(String meetingId, String filename) {
-        String rootPath = "anexos/" + meetingId;
-        Path dest = Paths.get(rootPath, filename);
+    public Path load(String meetingId, String fileName) {
+        String rootPath = "anexos/" + meetingId+ "/"+fileName;
+        Path dest = Paths.get(rootPath);
         return dest;
     }
 
     public Resource loadAsResource(String meetingId, String fileName) {
         try {
-            Path file = load(meetingId, fileName);
+            Path file = load(meetingId, fileName).normalize();
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
                 throw new FileNotFoundException("Could not read file: " + fileName);
             }
-
-        } catch (MalformedURLException e) {
-            throw new FileNotFoundException("Could not read file: " + fileName, e);
+        } catch (Exception e) {
+            throw new Error("Could not read file: " + fileName, e);
         }
     }
-
 }

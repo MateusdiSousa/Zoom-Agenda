@@ -70,7 +70,7 @@ export function CreateMeeting() {
 
                 }
             ).then(async resp => {
-                if (resp.status == 200 && selectedFile != null) {
+                if (resp.status == 200 && selectedFile.length > 0) {
                     const formData: FormData = new FormData();
                     const meetingId: string = resp.data.id.toString()
 

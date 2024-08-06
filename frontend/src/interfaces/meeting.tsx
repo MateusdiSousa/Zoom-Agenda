@@ -1,3 +1,5 @@
+import { Attachment } from "./attachment"
+
 export interface meeting {
     id : string
     topic : string
@@ -8,4 +10,5 @@ export interface meeting {
     requester : string
     participants : any
     meeting_id : string
+    attachments : Attachment[]
 }
