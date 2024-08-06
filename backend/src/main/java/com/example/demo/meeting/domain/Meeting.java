@@ -1,13 +1,17 @@
 package com.example.demo.meeting.domain;
 
+import java.util.Set;
+
 import org.json.JSONObject;
 
 import com.example.demo.meeting.dto.MeetingDto;
-
+import com.example.demo.attachment.domain.Attachment;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -32,7 +36,17 @@ public class Meeting {
 	private Object participants;
 	
 	private String meeting_id;
+
+	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
+	private Set<Attachment> attachments;
 	
+	public void setAttachment(Set<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+	public Set<Attachment> getAttachments(){
+		return this.attachments;
+	}
 	
 	public Meeting(MeetingDto dto) {
 		this.agenda = dto.getAgenda();

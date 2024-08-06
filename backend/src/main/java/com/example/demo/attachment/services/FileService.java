@@ -33,8 +33,7 @@ public class FileService {
         try {
             Files.copy(file.getInputStream(), destinationPath);
         } catch (IOException e) {
-            System.err.println("Erro ao salvar o arquivo: " + e.getMessage());
-            return "Erro ao salvar o arquivo";
+            throw new Error("Erro ao salvar arquivo: "+e.getMessage());
         }
 
         return fileName;

@@ -25,6 +25,6 @@ CREATE TABLE attachment(
 	filetype varchar(5) not null,
 	filelenght int not null,
 	url varchar(150) not null,
-	meetingId varchar(36),
-	FOREIGN KEY(id) references meeting(id)
+	meeting_id varchar(36),
+	FOREIGN KEY(meeting_id) references meeting(id)
 );

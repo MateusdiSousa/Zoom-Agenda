@@ -1,4 +1,4 @@
-import { MouseEvent, SetStateAction, useState } from "react"
+import { MouseEvent, useState } from "react"
 import { TextField } from "../../components/input/text-field"
 import { InputDate } from "../../components/input/input-date"
 import { InputNumber } from "../../components/input/input-number"
@@ -13,10 +13,10 @@ export function CreateMeeting() {
     const [start_time, setStartTime] = useState<Date>(new Date)
     const [duration, setDuration] = useState<number>(0)
     const [ConfirmationModal, setConfirmationModal] = useState<boolean>(false)
-    const [selectedFile, setSelectedFile] = useState<File>();
+    const [selectedFile, setSelectedFile] = useState([]);
 
-    const handleFile = (event : any) => {
-            setSelectedFile(event.target.files[0]);
+    const handleFile = (event: any) => {
+        setSelectedFile(event.target.files);
     }
 
     const clientID = 'zt6lhdUVTteosZ9p7x_NA'
@@ -44,7 +44,7 @@ export function CreateMeeting() {
     const AgendarReuniaoZoom = async () => {
         try {
             const meeting: ZoomMeeting = {
-                type : 2,
+                type: 2,
                 agenda: agenda,
                 duration: duration,
                 start_time: start_time.toISOString(),
@@ -67,15 +67,23 @@ export function CreateMeeting() {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     },
-                    
+
                 }
             ).then(async resp => {
                 if (resp.status == 200 && selectedFile != null) {
-                    const formData : FormData = new FormData();
-                    const meetingId = resp.data.id;
+                    const formData: FormData = new FormData();
+                    const meetingId: string = resp.data.id.toString()
 
-                    formData.append("meetingId",meetingId)
-                    formData.append("file", selectedFile);
+                    console.log(meetingId)
+
+
+                    formData.append("meetingId", meetingId)
+                    for (let index = 0; index < selectedFile.length; index++) {
+                        formData.append("files", selectedFile[index]);
+                    }
+
+                    console.log(selectedFile)
+
                     await axios.post("http://localhost:8080/attachment", formData).then(resp => {
                         console.log(resp)
                         if (resp.status == 200) {
@@ -99,12 +107,12 @@ export function CreateMeeting() {
                 <TextField name={"agenda: "} value={agenda} setvalue={setAgenda} type="text" />
                 <InputDate name="Date" setValue={setStartTime} value={start_time} />
                 <InputNumber name="Duration" setValue={setDuration} value={duration} />
-                <input type="file" onChange={handleFile}/>
+                <input multiple={true} type="file" onChange={handleFile} />
                 <button onClick={(e) => autenticarUsuario(e)}>Agendar</button>
             </form>
 
             {ConfirmationModal && (
-                <InformationModal onConfirm={() => nav("/")} confirmText="Ok" message={"Meeting Created successfully"}/>
+                <InformationModal onConfirm={() => nav("/")} confirmText="Ok" message={"Meeting Created successfully"} />
             )}
         </>
     )

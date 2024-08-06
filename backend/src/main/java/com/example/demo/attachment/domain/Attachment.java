@@ -16,7 +16,6 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "attachment")
-@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +24,7 @@ public class Attachment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String fileName;
+    private String filename;
 
     private String filetype;
 
@@ -33,7 +32,27 @@ public class Attachment {
 
     private String url;
 
+    public String getFilelenght() {
+        return filelenght;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public String getFiletype() {
+        return filetype;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
     @ManyToOne
-    @JoinColumn(name = "meetingId", referencedColumnName = "id")
+    @JoinColumn(name = "meeting_id", referencedColumnName = "id")
     private Meeting meeting;
 }

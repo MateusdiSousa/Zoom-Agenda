@@ -70,4 +70,14 @@ public class MeetingServices {
 			throw new Error(e.getMessage());
 		}
 	}
+
+	public Meeting getOneMeetingByIdZoom(String id){
+		try {
+			Optional<Meeting> response = meetingRepository.getByMeetingId(id);
+			Meeting meeting = response.get();
+			return meeting;	
+		} catch (Exception e) {
+			throw new Error(e.getMessage());
+		}
+	}
 }
