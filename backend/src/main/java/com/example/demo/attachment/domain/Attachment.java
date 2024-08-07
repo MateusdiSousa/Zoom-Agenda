@@ -52,6 +52,9 @@ public class Attachment {
         return url;
     }
 
+    public String getMeetingId(){
+        return meeting.getId();
+    }
     @ManyToOne
     @JoinColumn(name = "meeting_id", referencedColumnName = "id")
     private Meeting meeting;

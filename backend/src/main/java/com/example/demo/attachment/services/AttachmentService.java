@@ -73,4 +73,51 @@ public class AttachmentService {
             throw new Error("Could not read file: " + fileName, e);
         }
     }
+
+    public static void copyAndRename(File source, File destination) throws IOException {
+        if (!source.exists()) {
+            throw new IOException("Source file does not exist!");
+        }
+
+        if (destination.exists()) {
+            throw new IOException("Destination file already exist!");
+        }
+        Files.copy(source.toPath(), destination.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+    }
+
+    public static String formatFilenameWithId(String fileName ){
+        int lastIndex = fileName.lastIndexOf(".");
+        String filenameWithoutId = fileName.split("-")[0] + fileName.substring(lastIndex);
+        return filenameWithoutId;
+    }
+
+    @Transactional
+    public ResponseEntity<String> deleteAttachment(String attachmentId) {
+        Optional<Attachment> response = repository.findById(attachmentId);
+
+        if (!response.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Attachment not found");
+        }
+
+        Attachment attachment = response.get();
+        String url = this.root + attachment.getMeetingId() + "/" + attachment.getFilename();
+        File dir = new File(this.root + attachment.getMeetingId());
+        File file = new File(url);
+         
+        try {
+            repository.delete(attachment);
+            
+            if (file.exists() && !file.delete()) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete the file");
+            }
+
+            if (dir.exists() && dir.isDirectory() && dir.listFiles().length == 0 && !dir.delete() ) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete the directory");
+            }
+
+            return ResponseEntity.ok("File deleted sucessfully")
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting attachment: " + e.getMessage());
+        }
+    }
 }
