@@ -10,6 +10,8 @@ import com.example.demo.attachment.services.FileService;
 import com.example.demo.meeting.domain.Meeting;
 import com.example.demo.meeting.services.MeetingServices;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.util.List;
 
@@ -49,13 +51,11 @@ public class AttachmentController {
     }
 
     @GetMapping("/{meetingId}/{fileName}")
-    public ResponseEntity<Resource> getFile(@PathVariable String meetingId, @PathVariable String fileName) {
-        Resource file = attachmentService.loadAsResource(meetingId, fileName);
+    public ResponseEntity<Resource> getFile(@PathVariable String meetingId, @PathVariable String fileName, HttpServletRequest request) {
+        Resource file = attachmentService.loadAsResource(meetingId, fileName, request);
         if (file == null) {
             return ResponseEntity.notFound().build();
         }
-
-        System.out.println(file.getFilename());
 
         return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ file.getFilename()+"\"")

@@ -1,14 +1,21 @@
 package com.example.demo.attachment.services;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.attachment.domain.Attachment;
@@ -16,10 +23,13 @@ import com.example.demo.attachment.domain.AttachmentRepository;
 import com.example.demo.meeting.domain.Meeting;
 import com.example.demo.meeting.services.MeetingServices;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @Service
 public class AttachmentService {
+
+    private static final String root = "anexos/";
     @Autowired
     private FileService fileService;
 
@@ -50,21 +60,32 @@ public class AttachmentService {
 
             return "Files saved successfully";
         } catch (Exception e) {
-            throw new  Error(e.getMessage());
+            throw new Error(e.getMessage());
         }
     }
 
     public Path load(String meetingId, String fileName) {
-        String rootPath = "anexos/" + meetingId+ "/"+fileName;
+        String rootPath = this.root + meetingId + "/" + fileName;
         Path dest = Paths.get(rootPath);
         return dest;
     }
 
-    public Resource loadAsResource(String meetingId, String fileName) {
+    public Resource loadAsResource(String meetingId, String fileName, HttpServletRequest request) {
+        String filenameWithoutId = formatFilenameWithId(fileName);
+
+        File source = new File(this.root+meetingId+"/"+fileName);
+        File dest = new File(this.root + meetingId +"/"+filenameWithoutId);        
+        
         try {
-            Path file = load(meetingId, fileName).normalize();
-            Resource resource = new UrlResource(file.toUri());
+            copyAndRename(source, dest);
+            Path copyPath = load(meetingId, filenameWithoutId).normalize();
+            
+
+            Resource resource = new UrlResource(copyPath.toUri());
             if (resource.exists() || resource.isReadable()) {
+                /*  adding the tempFilePath attribute in the response to client, 
+                    for the interceptor delete the temporary attachment */
+                request.setAttribute("tempFilePath", dest.getAbsolutePath());
                 return resource;
             } else {
                 throw new FileNotFoundException("Could not read file: " + fileName);

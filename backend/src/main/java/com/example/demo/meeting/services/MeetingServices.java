@@ -1,19 +1,23 @@
 package com.example.demo.meeting.services;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.attachment.services.AttachmentService;
 import com.example.demo.meeting.domain.Meeting;
 import com.example.demo.meeting.domain.MeetingRepository;
 import com.example.demo.meeting.dto.MeetingDto;
 
 @Service
 public class MeetingServices {
+	private static final String root = "anexos/";
 	@Autowired
 	private MeetingRepository meetingRepository;
 
@@ -47,17 +51,17 @@ public class MeetingServices {
 	}
 
 	public ResponseEntity<String> deleteMeeting(String id) {
+		Optional<Meeting> response = meetingRepository.getByMeetingId(id);
+		if (!response.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Meeting not found!");
+		}
+		Meeting meeting = response.get();
 		try {
-			Optional<Meeting> response = meetingRepository.getByMeetingId(id);
-
-			if (response.isPresent()) {
-				meetingRepository.delete(response.get());
-				return ResponseEntity.ok("Deletado com sucesso");
-			} else {
-				return ResponseEntity.notFound().build();
-			}
+			meetingRepository.delete(meeting);
+			DeleteMeetingAttachment(id);
+			return ResponseEntity.status(HttpStatus.OK).body("Meeting deleted successfully");
 		} catch (Exception e) {
-			return ResponseEntity.notFound().build();
+			throw new Error(e.getMessage());
 		}
 	}
 
@@ -80,4 +84,14 @@ public class MeetingServices {
 			throw new Error(e.getMessage());
 		}
 	}
+
+	  public boolean DeleteMeetingAttachment(String meetingId){
+        String uri = this.root + meetingId;
+        File dir = new File(uri);
+        if (!dir.exists() || !dir.isDirectory()) {
+            return false;
+        }
+        
+        return dir.delete();
+    }
 }
