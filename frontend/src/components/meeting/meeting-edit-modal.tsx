@@ -6,6 +6,7 @@ import { meeting } from "../../interfaces/meeting";
 import { convertDateToBrasil } from "../../services/convertDate";
 import { ZoomMeeting } from "../../interfaces/zoom-meeting-dto";
 import axios from "axios";
+import { FaEdit } from "react-icons/fa";
 
 export function MeetingEditModal(props: { meeting: meeting, getMeeting: Function }) {
     const [topic, setTopic] = useState<string>(props.meeting.topic)
@@ -63,7 +64,7 @@ export function MeetingEditModal(props: { meeting: meeting, getMeeting: Function
                     modal.showModal()
                 }
             }
-            }>Edit</button>
+            }><FaEdit/></button>
             <dialog id={`${props.meeting.id}`} className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">Edit Meeting</h3>

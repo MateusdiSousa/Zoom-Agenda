@@ -31,11 +31,10 @@ export function CreateMeeting() {
 
         const handleMessage = (event: MessageEvent) => {
             if (event.data[0] === 'authenticated') {
-                console.log(event.data)
                 localStorage.setItem("token", event.data[1].access_token)
                 window.removeEventListener('message', handleMessage)
-                authWindow?.close()
-                AgendarReuniaoZoom()
+                authWindow?.close()   
+                AgendarReuniaoZoom()             
             }
         }
         window?.addEventListener('message', handleMessage)
